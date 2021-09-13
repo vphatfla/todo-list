@@ -1,3 +1,4 @@
+import { updateProjectDom } from "./display";
 import task from "./task";
 import project from "./project";
 
@@ -14,13 +15,16 @@ projectList.push(todayTaskList);
 
 export function createProject(title, description){
     let newProject = new project(title, description);
+    updateProjectDom(newProject);
     saveProject(newProject);
-    saveProjectList(projectList);
+    
 }
 export function saveProject(project){
     let name = project.title;
 
+    projectList = getProjectList();
     projectList.push(project);
+    saveProjectList(projectList);
 
     localStorage.setItem(name, JSON.stringify(project)); 
 }
@@ -38,21 +42,27 @@ export function getProjectList(){
     return JSON.parse(localStorage['projectList']);
 }
 // function remove Task 
-export function removeTaskFromProject(index){
-    for (let i = 0; i< projectList.length; i++){
-        projectList[i].removeTask(index);
-        console.log(projectList[i]);
-    }
+export function removeTaskFromProject(idOfProject, indexofTaskInArray){
+    let projectList = getProjectList();
+    projectList[idOfProject].taskOfThis.splice(indexofTaskInArray,1);
     saveProjectList(projectList);
 }
 // function remove project
 export function removeProject(title){
+    projectList = getProjectList();
     if (projectFromTitle(title) == false) return console.log('false infor');
     projectList.splice(projectFromTitle,1);
     saveProjectList(projectList);
 }
+// remove everything but the first 2 project
+export function removeEveryButTwo(){
+    projectList = getProjectList();
+    projectList.splice(2, projectList.length-2);
+    saveProjectList(projectList);
+}
 // get a project id object from its title
 function projectFromTitle(title){
+    projectList = getProjectList();
     for (let i = 0; i<projectList.length; i++){
         if (projectList[i].title == title) {
             return i;
@@ -61,22 +71,19 @@ function projectFromTitle(title){
     return false;
 }
 // create task
-let index = 0;
-export function createTask(title, description, dueDay, check, projectTitle){
+
+export function createTask(title, description, dueDay, check, projectId){
     projectList = getProjectList();
-    let projectBelong = projectList[projectFromTitle(projectTitle)];
-    if (projectBelong == false){
-        return console.log('false return project');
-    }
-    let newTask = new task(index, title, description, dueDay, check);
-    index++; //index is a unique number identify task
-    if (projectBelong.title != allTaskList.title && projectBelong.title != todayTaskList.title){
-        projectBelong.taskOfThis.push(newTask);
-        //saveProject(projectBelong);
-    }
+    let projectBelong = projectList[projectId];
+    
+    let newTask = new task(title, description, dueDay, check, projectId);
+
+    
+    projectBelong.taskOfThis.push(newTask);
+    
     // save to todaytaskList and all taskList
-    projectList[0].taskOfThis.push(newTask);
-    projectList[1].taskOfThis.push(newTask);
+    if (projectId != [0]) projectList[0].taskOfThis.push(newTask);
+    
     
     saveProjectList(projectList);
 }

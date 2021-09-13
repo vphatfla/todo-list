@@ -22,3 +22,10 @@
 .active{
     font-size: 25px;
 }
+.task-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+}

@@ -1,0 +1,15 @@
+.projectFormPopUp, .taskFormPopUp{
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+.projectPopUp, .taskPopUp{
+    position: fixed;
+    left: 45%;
+    top: 35%;
+    transform: translate(-50%, 5%);
+    border: 3px solid #999999;
+    z-index: 9;
+    background-color: black;
+    color: white;
+}
