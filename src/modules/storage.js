@@ -1,6 +1,7 @@
-import { updateProjectDom } from "./display";
+import { parseISO, format } from "date-fns";
 import task from "./task";
 import project from "./project";
+import { getToday } from "./display";
 
 
 
@@ -41,6 +42,24 @@ export function saveProjectList(projectList){
 export function getProjectList(){
     return JSON.parse(localStorage['projectList']);
 }
+// function set today list project
+export function setTodayTask(){
+    let today = getToday();
+    let projectList = getProjectList();
+    // clear today task
+    projectList[1].taskOfThis = [];
+    // get all tasks of All Task 
+    let allTaskArray = projectList[0].taskOfThis;
+
+    for (let i=0; i< allTaskArray.length; i++){
+        let dueDay = format(parseISO(allTaskArray[i].dueDay), 'MM/dd/yyyy');
+        // push task with the same day to today task list
+        if (dueDay == today) projectList[1].taskOfThis.push(allTaskArray[i]);
+    }
+
+    saveProjectList(projectList);
+
+}
 // function remove Task 
 export function removeTaskFromProject(idOfProject, indexofTaskInArray){
     let projectList = getProjectList();
@@ -48,10 +67,9 @@ export function removeTaskFromProject(idOfProject, indexofTaskInArray){
     saveProjectList(projectList);
 }
 // function remove project
-export function removeProject(title){
-    projectList = getProjectList();
-    if (projectFromTitle(title) == false) return console.log('false infor');
-    projectList.splice(projectFromTitle,1);
+export function deleteProject(idOfProject){
+    let projectList = getProjectList();
+    projectList.splice(idOfProject,1);
     saveProjectList(projectList);
 }
 // remove everything but the first 2 project
@@ -80,10 +98,39 @@ export function createTask(title, description, dueDay, check, projectId){
 
     
     projectBelong.taskOfThis.push(newTask);
-    
+    // sort
+    sortTaskBasedOnDueDay(projectBelong.taskOfThis);
     // save to todaytaskList and all taskList
     if (projectId != [0]) projectList[0].taskOfThis.push(newTask);
     
-    
+    console.log(projectList);
+    saveProjectList(projectList);
+}
+// sort task based on dueday
+function sortTaskBasedOnDueDay(taskArray){
+    for (let i = 0; i<taskArray.length-1; i++){
+        for (let j = i+1; j<taskArray.length; j++)
+            if (taskArray[i].dueDay > taskArray[j].dueDay){
+                console.log('check of sort called with i = ', i, ' and j = ', j);
+                let terminal = taskArray[i];
+                taskArray[i] = taskArray[j];            
+                taskArray[j] = terminal;
+        }
+    }
+}
+export function editTask(idOfProject, indexOfTaskInArray, title, description, dueDay, check){
+    let projectList = getProjectList();
+    let taskEdit = projectList[idOfProject].taskOfThis[indexOfTaskInArray];
+    taskEdit.title = title;
+    taskEdit.description = description;
+    taskEdit.dueDay = dueDay;
+    taskEdit.check = check;
+    saveProjectList(projectList);
+}
+export function saveCheckBoxTask(idOfProject, indexOfTaskInArray, valueOfCheckBox){
+    projectList = getProjectList();
+    let taskArray = projectList[idOfProject].taskOfThis;
+    taskArray[indexOfTaskInArray].check = valueOfCheckBox;
+    console.log(projectList);
     saveProjectList(projectList);
 }

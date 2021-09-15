@@ -1,27 +1,79 @@
 import {removeActive, addActive, displayProjectPopUp, removeDisplayProjectPopUp, createProjectPopUp, addActiveToTheNewest, createTaskPopUp, displayTaskPopUp,removeDisplayTaskPopUp, getIdOfCurrentProject, createEditTaskFormPopUp } from "./modules/eventsCSS";
-import { removeTaskFromProject, createProject, getProjectList, createTask, removeProject, removeEveryButTwo } from "./modules/storage";
+import { removeTaskFromProject, createProject, getProjectList, createTask, removeProject, removeEveryButTwo, deleteProject, saveCheckBoxTask, setTodayTask } from "./modules/storage";
 import project from "./modules/project";
-import {display, displayTask, updateProjectDom} from "./modules/display";
+import {display, displayTask, displayTodayAtHeader} from "./modules/display";
 import './styleForPopUp.css';
 import './style.css';
 
+let checkIfClickDeleteButton = false;
 display();
 createProjectPopUp();
 createTaskPopUp();
+displayTodayAtHeader();
+setInterval(displayTodayAtHeader,10000);
+setTodayTask();
+setInterval(setTodayTask, 1000);
 // event to display task of each project based on its id
 const activeProjectControl = function(){
+
     const project_ctn = document.querySelector('.project');
-    const prcts = project_ctn.querySelectorAll('a');
+    const prcts = project_ctn.querySelectorAll('div');
+    
     prcts.forEach(prct => prct.addEventListener('click', function(){
-        removeActive();
-        addActive(prct);
-        let idOfProject = parseInt(prct.getAttribute('id'));
-        displayTask(idOfProject);
-        totalTaskEvenControl();
+        if (checkIfClickDeleteButton) {
+            checkIfClickDeleteButton = false;
+            return;}
+        else {
+            
+            removeActive();
+
+            addActive(prct);
+            let idOfProject = parseInt(prct.getAttribute('id'));
+            // action when click delete button, delebutton still belong to the div
+            try {
+                displayTask(idOfProject);    
+                totalTaskEvenControl();
+            } catch (error) {
+                
+            }
+        }
+    
+
     }));
+    
+    
 
 };
 activeProjectControl();
+//delete project button control
+const deleteProjectButtonControl = function(){
+    const deleteButtons = document.querySelectorAll('.deleteProjectButton');
+    deleteButtons.forEach(deleteButton => deleteButton.addEventListener('click', function(){
+        const idOfProject = parseInt(deleteButton.parentElement.getAttribute('id'));
+        deleteProject(idOfProject);
+        display();
+
+        displayTask(getProjectList().length-1);
+        console.log(getProjectList().length-1);
+
+        removeActive();
+
+        addActiveToTheNewest();
+
+        // instead of total evencontrol
+        
+        createProjectPopUp();
+        addProjectButtonControl();
+        projectPopUpFormEventControl();
+        deleteProjectButtonControl();
+        
+
+        totalTaskEvenControl();
+
+        checkIfClickDeleteButton = true;
+    }))
+}
+deleteProjectButtonControl();
 // event to display pop up window to get input create new project
 const addProjectButtonControl = function(){
     let addProjectButton  = document.querySelector('.addProjectButton');
@@ -42,7 +94,9 @@ const projectPopUpFormEventControl = function(){
             createProject(projectTitle, projectDescription);
             removeDisplayProjectPopUp();
             display();
-            removeActive();
+            displayTask(getProjectList().length-1);
+            
+            removeActive(); 
             addActiveToTheNewest();
             totalEvenControl();
         }
@@ -60,9 +114,11 @@ projectPopUpFormEventControl();
 // function reset all event dom control after display
 const totalEvenControl = function(){
     createProjectPopUp();
-    activeProjectControl();
+    
     addProjectButtonControl();
     projectPopUpFormEventControl();
+    deleteProjectButtonControl();
+    activeProjectControl();
 }
 
 // function for task popup display
@@ -85,9 +141,11 @@ const taskPopUpFormEventControl = function(){
             alert('Title Task required!');
         } else{
             let taskDescription = document.getElementById('taskDescription').value;
-            let dueDay;
-            let check = 'false';
+            let dueDay = document.getElementById('taskDueDay').value;
+            
+            let check = false;
             let idOfProject = getIdOfCurrentProject();
+            
             createTask(taskTitle, taskDescription, dueDay, check, idOfProject);
             removeDisplayTaskPopUp();
             // reset display
@@ -119,19 +177,31 @@ const taskDeleteEvenControl = function(){
     editButtons.forEach(editButton => editButton.addEventListener('click', function(){
         let idOfProject = editButton.parentElement.getAttribute('idOfProject');
         let indexOfTaskInArray = editButton.parentElement.getAttribute('indexOfTaskInArray');
+
         createEditTaskFormPopUp(idOfProject, indexOfTaskInArray);
+
+        totalEvenControl();
     }))
 }
 taskDeleteEvenControl();
 
-function totalTaskEvenControl(){
+export function totalTaskEvenControl(){
     createTaskPopUp();
     addTaskButtonControl();
     taskPopUpFormEventControl();
     taskDeleteEvenControl();
+    checkBoxTaskEvenControl();
 }
+// checkbox of task done
+const checkBoxTaskEvenControl = function(){
+    const checkBoxs = document.querySelectorAll('#taskCheckBox');
+    checkBoxs.forEach(checkBox => checkBox.addEventListener('change', function(){
+        let idOfProject = checkBox.parentElement.getAttribute('idOfProject');
+        let indexOfTaskInArray = checkBox.parentElement.getAttribute('indexOfTaskInArray');
+        let valueOfCheckBox = checkBox.checked;
+        saveCheckBoxTask(idOfProject, indexOfTaskInArray, valueOfCheckBox);
+    }))
+};
+checkBoxTaskEvenControl();
 
-
-
-
-// done display, next: event for save/cancel task edit
+// control when delete 1 task from 1 project, the same task need to be deleted in others

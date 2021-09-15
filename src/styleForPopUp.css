@@ -1,9 +1,9 @@
-.projectFormPopUp, .taskFormPopUp{
+.projectFormPopUp, .taskFormPopUp, .editTaskFormPopUp{
     position: relative;
     text-align: center;
     width: 100%;
 }
-.projectPopUp, .taskPopUp{
+.projectPopUp, .taskPopUp, .editTaskPopUp{
     position: fixed;
     left: 45%;
     top: 35%;
@@ -12,4 +12,7 @@
     z-index: 9;
     background-color: black;
     color: white;
+}
+.taskPopUp input{
+    margin: 10px;
 }

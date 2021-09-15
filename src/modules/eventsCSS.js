@@ -1,9 +1,10 @@
-import { createProject, getProjectList } from "./storage";
-import { display, updateProjectDom } from "./display";
+import { createProject, editTask, getProjectList, saveProjectList } from "./storage";
+import { display, displayTask, updateProjectDom } from "./display";
+import { totalTaskEvenControl } from "..";
 
 export function getIdOfCurrentProject(){
     const ctn = document.querySelector('.project');
-    const projectListDom = ctn.querySelectorAll('a');
+    const projectListDom = ctn.querySelectorAll('div');
     
     let projectListArray = Array.prototype.slice.call(projectListDom);
     
@@ -13,7 +14,7 @@ export function getIdOfCurrentProject(){
 }
 export function removeActive(){
     const project_ctn = document.querySelector('.project');
-    const prcts = project_ctn.querySelectorAll('a');
+    const prcts = project_ctn.querySelectorAll('div');
     let arrayList = Array.prototype.slice.call(prcts);
     for (let i = 0; i<arrayList.length; i++){
         arrayList[i].classList.remove('active');
@@ -21,9 +22,11 @@ export function removeActive(){
 }
 export function addActiveToTheNewest(){
     const project_ctn = document.querySelector('.project');
-    const prcts = project_ctn.querySelectorAll('a');
+    const prcts = project_ctn.querySelectorAll('div');
     let arrayList = Array.prototype.slice.call(prcts);
+    
     arrayList[arrayList.length-1].classList.add('active');
+    console.log(arrayList);
 }
 export function addActive(object){
     object.classList.add('active');
@@ -91,6 +94,10 @@ export function createTaskPopUp(){
     inputDescription.setAttribute('id', 'taskDescription');
     inputDescription.setAttribute('placeholder','Task Description');
     //inputDescription.setAttribute('required');
+    // input day time 
+    const inputDueDay = document.createElement('input');
+    inputDueDay.setAttribute('type','date')
+    inputDueDay.setAttribute('id','taskDueDay');
 
     const createButton = document.createElement('button');
     createButton.innerHTML = 'Create';
@@ -100,7 +107,7 @@ export function createTaskPopUp(){
     cancelButton.innerHTML = 'Cancel';
     cancelButton.classList.add('cancelTask');
     
-    ctn.append(h3,inputTitle,inputDescription, createButton, cancelButton);
+    ctn.append(h3,inputTitle,inputDescription, inputDueDay, createButton, cancelButton);
 
     const container = document.querySelector('.taskFormPopUp');
     container.innerHTML = '';
@@ -167,7 +174,22 @@ export function createEditTaskFormPopUp(idOfProject, indexOfTaskInArray){
     //event
 
     saveButton.addEventListener('click', function(){
+        if (inputTitle == '') alert('Title required');
+        else {
+            title = inputTitle.value;
+            description = inputDescription.value;
+            
 
+            editTask(idOfProject, indexOfTaskInArray, title, description);
+
+            displayTask(idOfProject);
+            totalTaskEvenControl();
+            removeDisplayEditTaskFormPopUp();
+        }
     })
 }
 
+function removeDisplayEditTaskFormPopUp(){
+    const ctn = document.querySelector('.editTaskFormPopUp');
+    ctn.style.display = 'none';
+}
