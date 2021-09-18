@@ -10,9 +10,29 @@
     transform: translate(-50%, 5%);
     border: 3px solid #999999;
     z-index: 9;
-    background-color: black;
+    background-color:  rgb(128, 191, 255);
     color: white;
 }
 .taskPopUp input{
     margin: 10px;
 }
+.projectFormPopUp button, .taskFormPopUp button, .editTaskFormPopUp button {
+    background-color: transparent;
+    color: black;
+    border: none;
+    padding: 2%;
+    font-size: 12px;
+    transition-duration: 1s;
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+.projectFormPopUp button :hover, .taskFormPopUp button:hover , .editTaskFormPopUp button :hover {
+    background-color: white;
+}
+
+.projectFormPopUp input, .taskFormPopUp input, .editTaskFormPopUp input{
+    margin-left: 2%;
+    margin-right: 2%;
+}
+

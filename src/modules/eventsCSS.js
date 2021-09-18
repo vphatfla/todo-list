@@ -26,7 +26,6 @@ export function addActiveToTheNewest(){
     let arrayList = Array.prototype.slice.call(prcts);
     
     arrayList[arrayList.length-1].classList.add('active');
-    console.log(arrayList);
 }
 export function addActive(object){
     object.classList.add('active');
@@ -155,6 +154,11 @@ export function createEditTaskFormPopUp(idOfProject, indexOfTaskInArray){
     inputDescription.value = description;
     //inputDescription.setAttribute('required');
 
+    const inputDueDay = document.createElement('input');
+    inputDueDay.setAttribute('type','date')
+    inputDueDay.setAttribute('id','taskDueDay');
+    inputDueDay.value = dueDay;
+
     const saveButton = document.createElement('button');
     saveButton.innerHTML = 'Save';
     saveButton.classList.add('saveTask');
@@ -163,7 +167,7 @@ export function createEditTaskFormPopUp(idOfProject, indexOfTaskInArray){
     cancelButton.innerHTML = 'Cancel';
     cancelButton.classList.add('cancelEditTask');
         
-    ctn.append(h3,inputTitle,inputDescription, saveButton, cancelButton);
+    ctn.append(h3,inputTitle,inputDescription,inputDueDay, saveButton, cancelButton);
 
     const container = document.querySelector('.editTaskFormPopUp');
     container.innerHTML = '';
@@ -178,14 +182,18 @@ export function createEditTaskFormPopUp(idOfProject, indexOfTaskInArray){
         else {
             title = inputTitle.value;
             description = inputDescription.value;
+            dueDay = inputDueDay.value;
+
+            editTask(idOfProject, indexOfTaskInArray, title, description, dueDay);
             
-
-            editTask(idOfProject, indexOfTaskInArray, title, description);
-
             displayTask(idOfProject);
             totalTaskEvenControl();
             removeDisplayEditTaskFormPopUp();
         }
+    })
+
+    cancelButton.addEventListener('click', function(){
+        removeDisplayEditTaskFormPopUp();
     })
 }
 

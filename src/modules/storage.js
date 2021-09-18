@@ -16,7 +16,7 @@ projectList.push(todayTaskList);
 
 export function createProject(title, description){
     let newProject = new project(title, description);
-    updateProjectDom(newProject);
+    
     saveProject(newProject);
     
 }
@@ -63,7 +63,22 @@ export function setTodayTask(){
 // function remove Task 
 export function removeTaskFromProject(idOfProject, indexofTaskInArray){
     let projectList = getProjectList();
+    // get task information to delete in other project
+    let titleOfTargetTask = projectList[idOfProject].taskOfThis[indexofTaskInArray].title;
+    let dueDayOfTargetTask = projectList[idOfProject].taskOfThis[indexofTaskInArray].dueDay;
+    
     projectList[idOfProject].taskOfThis.splice(indexofTaskInArray,1);
+    
+    // check other project
+    for (let i = 0; i<projectList.length; i++){
+        let taskArray = projectList[i].taskOfThis;
+        for (let j = 0; j<taskArray.length; j++){
+            if (taskArray[j].title == titleOfTargetTask && taskArray[j].dueDay == dueDayOfTargetTask){
+                taskArray.splice(j,1);
+                break;
+            }
+        }
+    }
     saveProjectList(projectList);
 }
 // function remove project
@@ -101,9 +116,12 @@ export function createTask(title, description, dueDay, check, projectId){
     // sort
     sortTaskBasedOnDueDay(projectBelong.taskOfThis);
     // save to todaytaskList and all taskList
-    if (projectId != [0]) projectList[0].taskOfThis.push(newTask);
+    if (projectId != [0]) {
+        projectList[0].taskOfThis.push(newTask);
+        sortTaskBasedOnDueDay(projectList[0].taskOfThis);
+    }
     
-    console.log(projectList);
+
     saveProjectList(projectList);
 }
 // sort task based on dueday
@@ -111,7 +129,7 @@ function sortTaskBasedOnDueDay(taskArray){
     for (let i = 0; i<taskArray.length-1; i++){
         for (let j = i+1; j<taskArray.length; j++)
             if (taskArray[i].dueDay > taskArray[j].dueDay){
-                console.log('check of sort called with i = ', i, ' and j = ', j);
+                
                 let terminal = taskArray[i];
                 taskArray[i] = taskArray[j];            
                 taskArray[j] = terminal;
@@ -131,6 +149,5 @@ export function saveCheckBoxTask(idOfProject, indexOfTaskInArray, valueOfCheckBo
     projectList = getProjectList();
     let taskArray = projectList[idOfProject].taskOfThis;
     taskArray[indexOfTaskInArray].check = valueOfCheckBox;
-    console.log(projectList);
     saveProjectList(projectList);
 }

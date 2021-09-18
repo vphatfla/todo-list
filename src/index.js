@@ -1,6 +1,5 @@
 import {removeActive, addActive, displayProjectPopUp, removeDisplayProjectPopUp, createProjectPopUp, addActiveToTheNewest, createTaskPopUp, displayTaskPopUp,removeDisplayTaskPopUp, getIdOfCurrentProject, createEditTaskFormPopUp } from "./modules/eventsCSS";
-import { removeTaskFromProject, createProject, getProjectList, createTask, removeProject, removeEveryButTwo, deleteProject, saveCheckBoxTask, setTodayTask } from "./modules/storage";
-import project from "./modules/project";
+import { removeTaskFromProject, createProject, getProjectList, createTask, deleteProject, saveCheckBoxTask, setTodayTask } from "./modules/storage";
 import {display, displayTask, displayTodayAtHeader} from "./modules/display";
 import './styleForPopUp.css';
 import './style.css';
@@ -54,7 +53,6 @@ const deleteProjectButtonControl = function(){
         display();
 
         displayTask(getProjectList().length-1);
-        console.log(getProjectList().length-1);
 
         removeActive();
 
@@ -71,6 +69,7 @@ const deleteProjectButtonControl = function(){
         totalTaskEvenControl();
 
         checkIfClickDeleteButton = true;
+        activeProjectControl();
     }))
 }
 deleteProjectButtonControl();
@@ -99,6 +98,7 @@ const projectPopUpFormEventControl = function(){
             removeActive(); 
             addActiveToTheNewest();
             totalEvenControl();
+            totalTaskEvenControl();
         }
 
     });
@@ -150,6 +150,7 @@ const taskPopUpFormEventControl = function(){
             removeDisplayTaskPopUp();
             // reset display
             displayTask(idOfProject);
+            setTodayTask();
             totalTaskEvenControl();
         }
     });
@@ -204,4 +205,4 @@ const checkBoxTaskEvenControl = function(){
 };
 checkBoxTaskEvenControl();
 
-// control when delete 1 task from 1 project, the same task need to be deleted in others
+// next: control when delete 1 task from 1 project, the same task need to be deleted in others
