@@ -1,10 +1,11 @@
 import {removeActive, addActive, displayProjectPopUp, removeDisplayProjectPopUp, createProjectPopUp, addActiveToTheNewest, createTaskPopUp, displayTaskPopUp,removeDisplayTaskPopUp, getIdOfCurrentProject, createEditTaskFormPopUp } from "./modules/eventsCSS";
 import { removeTaskFromProject, createProject, getProjectList, createTask, deleteProject, saveCheckBoxTask, setTodayTask } from "./modules/storage";
-import {display, displayTask, displayTodayAtHeader} from "./modules/display";
+import {display, displayTask, displayTodayAtHeader, insertPencilImg} from "./modules/display";
 import './styleForPopUp.css';
 import './style.css';
 
 let checkIfClickDeleteButton = false;
+insertPencilImg();
 display();
 createProjectPopUp();
 createTaskPopUp();

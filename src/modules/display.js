@@ -1,10 +1,20 @@
 import editorSrc from './image/editor.png';
 import deleteSrc from './image/delete.jpg';
+import pencilSrc from './image/pencilIcon.png';
 import { parseISO, format } from "date-fns";
 import { getProjectList } from "./storage";
 
 
+export function insertPencilImg(){
+    const ctn = document.querySelector('.title-img');
 
+    const img = document.createElement('img');
+    img.src = pencilSrc;
+
+    const h1 = document.createElement('h1');
+    h1.innerHTML = 'Todo Lists';
+    ctn.append(img, h1);
+}
 export function getToday(){
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
