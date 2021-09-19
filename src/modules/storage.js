@@ -40,7 +40,14 @@ export function saveProjectList(projectList){
 }
 
 export function getProjectList(){
-    return JSON.parse(localStorage['projectList']);
+    try {
+        return JSON.parse(localStorage['projectList']);    
+    } catch (error) {
+        console.log('error');
+        saveProjectList(projectList);
+        return JSON.parse(localStorage['projectList']);    
+    }
+    
 }
 // function set today list project
 export function setTodayTask(){
