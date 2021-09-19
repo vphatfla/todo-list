@@ -1,5 +1,5 @@
 import { createProject, editTask, getProjectList, saveProjectList } from "./storage";
-import { display, displayTask, updateProjectDom } from "./display";
+import { display, displayTask, getTodayFormatOfInput, updateProjectDom } from "./display";
 import { totalTaskEvenControl } from "..";
 
 export function getIdOfCurrentProject(){
@@ -97,7 +97,7 @@ export function createTaskPopUp(){
     const inputDueDay = document.createElement('input');
     inputDueDay.setAttribute('type','date')
     inputDueDay.setAttribute('id','taskDueDay');
-
+    inputDueDay.value = getTodayFormatOfInput();
     const createButton = document.createElement('button');
     createButton.innerHTML = 'Create';
     createButton.classList.add('createTask');

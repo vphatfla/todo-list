@@ -143,9 +143,10 @@ const taskPopUpFormEventControl = function(){
         } else{
             let taskDescription = document.getElementById('taskDescription').value;
             let dueDay = document.getElementById('taskDueDay').value;
-            
+
             let check = false;
             let idOfProject = getIdOfCurrentProject();
+            
             
             createTask(taskTitle, taskDescription, dueDay, check, idOfProject);
             removeDisplayTaskPopUp();
